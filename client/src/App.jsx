@@ -5,7 +5,7 @@ function App() {
   const [data, setData] = useState([]);
   useEffect(() => {
     axios
-      .get("http://backend:9000/products")
+      .get(`http://localhost:8000/products`)
       .then((res) => res.data)
       .then((data) => setData(data));
   }, []);

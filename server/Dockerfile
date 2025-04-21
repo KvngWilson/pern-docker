@@ -1,10 +1,10 @@
 FROM node:19-alpine
 
-WORKDIR /home/node/app
+WORKDIR /server
 
-COPY . .
+COPY package*.json .
 
-RUN chown -R node:node /home/node/app
+RUN chown -R node:node /server
 
 USER node
 

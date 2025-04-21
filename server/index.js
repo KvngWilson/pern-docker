@@ -8,14 +8,14 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://frontend:5173",
+    origin: "http://localhost:5173",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
     allowedHeaders: ["Content-Type"],
   })
 );
 
-const PORT = process.env.PORT || 9000;
+const PORT = process.env.SERVER_PORT || 9000;
 
 const getProducts = (req, res) => {
   pool.query("SELECT * FROM products", (err, result) => {
@@ -34,5 +34,5 @@ app.get("/", (req, res) => {
 app.get("/products", getProducts);
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${SERVER_PORT}`);
 });

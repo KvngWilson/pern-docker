@@ -1,0 +1,15 @@
+server {
+    listen ${REVERSE_PROXY_PORT};
+    server_name ${REVERSE_PROXY_HOST};
+
+    root /etc/nginx;
+
+    add_header 'Access-Control-Allow-Origin' ${SERVER_URL};
+    add_header 'Access-Control-Allow-Credentials' 'true';
+
+    location /api {
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_pass http://${SERVER_HOST}:${SERVER_PORT}/products;
+    }
+}

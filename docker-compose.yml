@@ -1,0 +1,62 @@
+version: "3.8"
+
+services:
+  server:
+    image: server:1.0.0
+    container_name: ${SERVER_HOST}
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    env_file: .env
+    restart: always
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+    volumes:
+      - ./server:/server
+      - server-v-node-modules:/server/node_modules
+    depends_on:
+      - db
+
+  client:
+    image: client:1.0.0
+    container_name: ${CLIENT_HOST}
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    env_file: .env
+    restart: always
+    ports:
+      - ${CLIENT_PORT}:${CLIENT_PORT}
+    volumes:
+      - ./client:/client
+      - server-v-node-modules:/server/node_modules
+    depends_on:
+      - reverse-proxy
+      - server
+
+  reverse-proxy:
+    image: nginx:latest
+    container_name: ${REVERSE_PROXY_HOST}
+    build:
+      context: ./reverse-proxy
+      dockerfile: Dockerfile
+    env_file: .env
+    restart: always
+    ports:
+      - ${REVERSE_PROXY_PORT}:${REVERSE_PROXY_PORT}
+    volumes:
+      - ./reverse-proxy/default.conf.template:/etc/nginx/templates/default.conf.template
+    depends_on:
+      - server
+
+  db:
+    image: postgres:latest
+    container_name: ${DB_HOST}
+    env_file: .env
+    restart: always
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+
+volumes:
+  server-v-node-modules:
+    name: "server-v-node-modules"
